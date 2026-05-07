@@ -2,6 +2,9 @@
 
 import React, { useState, useCallback, useMemo, useEffect } from 'react';
 import { Toaster, toast } from 'sonner';
+import { Lock, Sparkles, ArrowRight, Briefcase } from 'lucide-react';
+import { useAuth } from '@/context/AuthContext';
+import AuthModal from '@/components/ui/AuthModal';
 import FilterSidebar from './FilterSidebar';
 import InternshipList from './InternshipList';
 import ErrorBanner from './ErrorBanner';
@@ -133,6 +136,8 @@ export const DEFAULT_FILTERS: FilterState = {
 const ITEMS_PER_PAGE = 12;
 
 export default function ListingsPageClient() {
+  const { user, loading: authLoading } = useAuth();
+  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const [filters, setFilters] = useState<FilterState>(DEFAULT_FILTERS);
   const [isLoading, setIsLoading] = useState(true);
   const [hasError, setHasError] = useState(false);
@@ -156,10 +161,11 @@ export default function ListingsPageClient() {
   }, []);
 
   useEffect(() => {
+    if (!user) return;
     const controller = new AbortController();
     void loadInternships(false, controller.signal);
     return () => controller.abort();
-  }, [loadInternships]);
+  }, [loadInternships, user]);
 
   const handleRetry = useCallback(() => {
     void loadInternships(true);
@@ -195,6 +201,83 @@ export default function ListingsPageClient() {
     return filteredAndSorted.slice(start, start + ITEMS_PER_PAGE);
   }, [filteredAndSorted, currentPage]);
 
+  /* ── Auth loading spinner ── */
+  if (authLoading) {
+    return (
+      <div className="flex items-center justify-center py-32">
+        <div className="w-8 h-8 rounded-full border-2 border-newton-blue-500 border-t-transparent animate-spin" />
+      </div>
+    );
+  }
+
+  /* ── Auth gate wall ── */
+  if (!user) {
+    return (
+      <>
+        <AuthModal isOpen={isAuthModalOpen} onClose={() => setIsAuthModalOpen(false)} />
+
+        <div className="relative mt-12 overflow-hidden">
+          {/* Blurred ghost cards */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 select-none pointer-events-none opacity-40 blur-[3px]">
+            {[
+              { role: 'Full Stack Developer', company: 'Razorpay', stipend: '₹25K/mo', tag: 'bg-blue-50 text-blue-700' },
+              { role: 'UI/UX Designer', company: 'Swiggy', stipend: '₹18K/mo', tag: 'bg-violet-50 text-violet-700' },
+              { role: 'Data Analyst', company: 'CRED', stipend: '₹20K/mo', tag: 'bg-amber-50 text-amber-700' },
+              { role: 'Product Management', company: 'Meesho', stipend: '₹30K/mo', tag: 'bg-green-50 text-green-700' },
+              { role: 'Backend Engineer', company: 'Zepto', stipend: '₹22K/mo', tag: 'bg-red-50 text-red-700' },
+              { role: 'ML Intern', company: 'Google', stipend: '₹50K/mo', tag: 'bg-teal-50 text-teal-700' },
+            ].map((card, i) => (
+              <div key={i} className="bg-white rounded-2xl border border-gray-100 p-5 shadow-sm">
+                <div className="flex items-start gap-3">
+                  <div className="w-10 h-10 rounded-xl bg-gray-100 flex items-center justify-center flex-shrink-0">
+                    <Briefcase size={16} className="text-gray-400" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-bold text-gray-900 truncate">{card.role}</p>
+                    <p className="text-xs text-gray-500 mt-0.5">{card.company}</p>
+                    <span className={`mt-2 inline-block text-[10px] font-semibold px-2 py-0.5 rounded-full ${card.tag}`}>
+                      {card.stipend}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Gradient fade + lock overlay */}
+          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-white/60 to-white" />
+
+          <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-4 pt-24">
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-newton-blue-50 border border-newton-blue-200 text-newton-blue-600 text-xs font-semibold mb-5">
+              <Sparkles size={11} />
+              Sign in to unlock all listings
+            </div>
+
+            <div className="w-16 h-16 rounded-2xl bg-newton-blue-500 shadow-[0_12px_30px_-8px_rgba(0,102,255,0.5)] flex items-center justify-center mb-6">
+              <Lock size={28} className="text-white" />
+            </div>
+
+            <h2 className="text-2xl sm:text-3xl font-black text-gray-900 tracking-tight max-w-sm">
+              Create a free account to view opportunities
+            </h2>
+            <p className="mt-3 text-sm text-gray-500 max-w-xs leading-relaxed">
+              Sign in to browse verified internship listings, filter by skills & location, and apply in one click.
+            </p>
+
+            <button
+              onClick={() => setIsAuthModalOpen(true)}
+              className="mt-8 inline-flex items-center gap-2 px-8 py-3.5 rounded-xl bg-newton-blue-500 text-white font-black text-sm tracking-wide hover:bg-newton-blue-600 transition-all shadow-[0_8px_24px_-6px_rgba(0,102,255,0.5)] active:scale-[0.98]"
+            >
+              Sign in / Create account
+              <ArrowRight size={15} />
+            </button>
+          </div>
+        </div>
+      </>
+    );
+  }
+
+  /* ── Authenticated view ── */
   return (
     <div className="relative">
       <Toaster position="top-center" richColors />
@@ -233,3 +316,4 @@ export default function ListingsPageClient() {
     </div>
   );
 }
+
