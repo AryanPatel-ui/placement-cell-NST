@@ -4,6 +4,7 @@ import React, { useState, useCallback, useMemo, useEffect } from 'react';
 import { Toaster, toast } from 'sonner';
 import { useAuth } from '@/context/AuthContext';
 import AuthModal from '@/components/ui/AuthModal';
+import ExploreModal from '@/components/ui/ExploreModal';
 import FilterSidebar from './FilterSidebar';
 import InternshipList from './InternshipList';
 import ErrorBanner from './ErrorBanner';
@@ -137,6 +138,7 @@ const ITEMS_PER_PAGE = 12;
 export default function ListingsPageClient() {
   const { user } = useAuth();
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
+  const [isExploreModalOpen, setIsExploreModalOpen] = useState(false);
   const [filters, setFilters] = useState<FilterState>(DEFAULT_FILTERS);
   const [isLoading, setIsLoading] = useState(true);
   const [hasError, setHasError] = useState(false);
@@ -183,7 +185,7 @@ export default function ListingsPageClient() {
   // Intercept pagination — page 2+ requires login
   const handlePageChange = useCallback((page: number) => {
     if (page > 1 && !user) {
-      setIsAuthModalOpen(true);
+      setIsExploreModalOpen(true);
       return;
     }
     setCurrentPage(page);
@@ -213,6 +215,11 @@ export default function ListingsPageClient() {
   return (
     <div className="relative">
       <AuthModal isOpen={isAuthModalOpen} onClose={() => setIsAuthModalOpen(false)} />
+      <ExploreModal 
+        isOpen={isExploreModalOpen} 
+        onClose={() => setIsExploreModalOpen(false)} 
+        onContinue={() => setIsAuthModalOpen(true)} 
+      />
       <Toaster position="top-center" richColors />
 
       <div className="flex flex-col gap-12">
