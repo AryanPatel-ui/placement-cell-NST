@@ -25,12 +25,10 @@ export default function ResourcesPage() {
 
   const handleCloseExplore = () => {
     setIsExploreModalOpen(false);
-    if (!user) router.push('/');
   };
 
   const handleCloseAuth = () => {
     setIsAuthModalOpen(false);
-    if (!user) router.push('/');
   };
 
   const resources = [
