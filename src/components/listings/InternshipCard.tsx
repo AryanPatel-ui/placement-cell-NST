@@ -132,6 +132,20 @@ export default function InternshipCard({ internship }: InternshipCardProps) {
             </h3>
           </div>
         </div>
+        
+        {user && (
+          <button 
+            onClick={(e) => { e.preventDefault(); setIsSaved(!isSaved); }}
+            className={`p-2.5 sm:p-3 rounded-2xl border transition-all duration-300 flex items-center justify-center shrink-0 ${
+              isSaved 
+                ? 'bg-[#0066FF]/10 border-[#0066FF]/30 text-[#0066FF]' 
+                : 'bg-white border-gray-100 text-gray-400 hover:border-gray-200 hover:text-gray-600'
+            }`}
+            title={isSaved ? "Unsave" : "Save"}
+          >
+            <Bookmark size={18} className={isSaved ? 'fill-current' : ''} />
+          </button>
+        )}
       </div>
 
       {/* Skills Section - NEW */}
@@ -222,20 +236,6 @@ export default function InternshipCard({ internship }: InternshipCardProps) {
         
         <div className="flex items-center gap-2 ml-auto">
           {user && (
-            <>
-              <button 
-                onClick={(e) => { e.preventDefault(); setIsSaved(!isSaved); }}
-                className={`p-2.5 sm:px-4 sm:py-3.5 rounded-2xl border transition-all duration-300 flex items-center justify-center gap-2 text-[10px] sm:text-[11px] font-black uppercase tracking-[0.1em] ${
-                  isSaved 
-                    ? 'bg-[#0066FF]/10 border-[#0066FF]/30 text-[#0066FF]' 
-                    : 'bg-white border-gray-200 text-gray-500 hover:border-gray-300 hover:text-gray-700'
-                }`}
-                title={isSaved ? "Unsave" : "Save"}
-              >
-                <Bookmark size={14} className={isSaved ? 'fill-current' : ''} />
-                <span className="hidden min-[400px]:inline">{isSaved ? 'Saved' : 'Save'}</span>
-              </button>
-              
               <button 
                 onClick={(e) => { e.preventDefault(); setIsApplied(!isApplied); }}
                 className={`p-2.5 sm:px-4 sm:py-3.5 rounded-2xl border transition-all duration-300 flex items-center justify-center gap-2 text-[10px] sm:text-[11px] font-black uppercase tracking-[0.1em] ${
@@ -248,7 +248,6 @@ export default function InternshipCard({ internship }: InternshipCardProps) {
                 <CheckCircle2 size={14} className={isApplied ? 'fill-current' : ''} />
                 <span className="hidden min-[400px]:inline">{isApplied ? 'Applied' : 'Mark'}</span>
               </button>
-            </>
           )}
 
           <a
