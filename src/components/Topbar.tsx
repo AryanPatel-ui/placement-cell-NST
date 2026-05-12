@@ -104,7 +104,7 @@ export default function Topbar() {
                         <p className="text-[10px] text-gray-400 truncate mt-0.5">{user.email}</p>
                       </div>
                       <Link 
-                        href="#"
+                        href="/profile/saved"
                         onClick={() => setIsUserMenuOpen(false)}
                         className="w-full flex items-center gap-2.5 px-4 py-3 text-[11px] font-semibold text-gray-600 hover:bg-gray-50 transition-colors"
                       >
@@ -211,7 +211,7 @@ export default function Topbar() {
                         
                         <div className="flex flex-col gap-1 border-t border-gray-200/60 pt-2 mt-1">
                           <Link 
-                            href="#"
+                            href="/profile/saved"
                             onClick={() => setIsMobileMenuOpen(false)}
                             className="flex items-center gap-2.5 py-2 text-[11px] font-semibold text-gray-600"
                           >

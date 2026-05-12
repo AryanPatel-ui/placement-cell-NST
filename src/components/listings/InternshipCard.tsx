@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   MapPin,
   Clock,
@@ -100,6 +100,39 @@ export default function InternshipCard({ internship }: InternshipCardProps) {
   const [isSaved, setIsSaved] = useState(false);
   const [isApplied, setIsApplied] = useState(false);
 
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      try {
+        const savedIds = JSON.parse(localStorage.getItem('saved_internships') || '[]');
+        setIsSaved(savedIds.includes(internship.id));
+      } catch (e) {
+        console.error('Error reading saved internships', e);
+      }
+    }
+  }, [internship.id]);
+
+  const toggleSave = (e: React.MouseEvent) => {
+    e.preventDefault();
+    if (!user) return;
+    
+    const newSaved = !isSaved;
+    setIsSaved(newSaved);
+    
+    try {
+      const savedIds = JSON.parse(localStorage.getItem('saved_internships') || '[]');
+      if (newSaved) {
+        if (!savedIds.includes(internship.id)) savedIds.push(internship.id);
+      } else {
+        const idx = savedIds.indexOf(internship.id);
+        if (idx > -1) savedIds.splice(idx, 1);
+      }
+      localStorage.setItem('saved_internships', JSON.stringify(savedIds));
+      window.dispatchEvent(new Event('saved_internships_changed'));
+    } catch (e) {
+      console.error('Error saving internship', e);
+    }
+  };
+
   const RoleIcon = getRoleIcon(internship.title);
   const displaySkills = internship.skills.slice(0, 2);
 
@@ -135,7 +168,7 @@ export default function InternshipCard({ internship }: InternshipCardProps) {
         
         {user && (
           <button 
-            onClick={(e) => { e.preventDefault(); setIsSaved(!isSaved); }}
+            onClick={toggleSave}
             className={`p-2.5 sm:p-3 rounded-2xl border transition-all duration-300 flex items-center justify-center shrink-0 ${
               isSaved 
                 ? 'bg-[#0066FF]/10 border-[#0066FF]/30 text-[#0066FF]' 
