@@ -18,7 +18,7 @@ export default function ResourcesPage() {
       icon: <Users className="w-8 h-8 text-violet-600" />,
       bg: 'bg-violet-50',
       tag: 'Practice',
-      href: '#'
+      href: 'https://docs.google.com/document/d/1sniw-RgYZN-02O-Ea972528WUN1lAVeK42FPGgAgL0c/edit?usp=sharing'
     },
     {
       title: 'Resume Guidelines',
