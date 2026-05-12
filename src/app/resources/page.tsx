@@ -26,7 +26,7 @@ export default function ResourcesPage() {
       icon: <FileText className="w-8 h-8 text-amber-600" />,
       bg: 'bg-amber-50',
       tag: 'Career',
-      href: '#'
+      href: 'https://docs.google.com/document/d/13rm5MY5jteXYVeAnLfRFljyoYYFllzxP0aqITH1bN2E/edit?usp=drivesdk'
     }
   ];
 
