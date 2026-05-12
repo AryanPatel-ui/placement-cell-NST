@@ -109,25 +109,25 @@ export default function InternshipCard({ internship }: InternshipCardProps) {
       <div className="absolute top-0 right-0 w-32 h-32 bg-newton-blue-500/5 rounded-bl-full -mr-16 -mt-16 transition-transform duration-500 group-hover:scale-110" />
 
       {/* Top Section: Company Logo/Initial and Name */}
-      <div className="flex items-start justify-between mb-8 relative z-10">
-        <div className="flex items-center gap-5">
-          <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-[18px] sm:rounded-[20px] bg-white flex items-center justify-center border-2 border-gray-50 shadow-sm group-hover:shadow-[0_8px_18px_rgba(0,102,255,0.08)] transition-all duration-300 overflow-hidden">
+      <div className="flex items-start justify-between mb-8 relative z-10 gap-4">
+        <div className="flex items-center gap-4 sm:gap-5 min-w-0 flex-1">
+          <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-[18px] sm:rounded-[20px] bg-white flex items-center justify-center border-2 border-gray-50 shadow-sm group-hover:shadow-[0_8px_18px_rgba(0,102,255,0.08)] transition-all duration-300 overflow-hidden shrink-0">
             <div className="w-full h-full rounded-[16px] sm:rounded-[18px] bg-newton-blue-50 text-newton-blue-600 flex items-center justify-center">
               <RoleIcon size={26} strokeWidth={2} className="sm:w-7 sm:h-7" />
             </div>
           </div>
-          <div className="flex flex-col">
+          <div className="flex flex-col min-w-0 flex-1">
             <div className="flex items-center gap-2">
-              <span className="text-[10px] font-black tracking-[0.2em] text-gray-400 uppercase">
+              <span className="text-[10px] font-black tracking-[0.2em] text-gray-400 uppercase truncate">
                 {internship.company}
               </span>
               {internship.isNew && (
-                <span className="px-2 py-0.5 rounded-full bg-newton-orange-500 text-white text-[8px] font-black uppercase tracking-widest">
+                <span className="px-2 py-0.5 rounded-full bg-newton-orange-500 text-white text-[8px] font-black uppercase tracking-widest shrink-0">
                   NEW
                 </span>
               )}
             </div>
-            <h3 className="text-lg sm:text-xl font-black text-gray-900 mt-1 leading-tight group-hover:text-newton-blue-500 transition-colors line-clamp-2">
+            <h3 className="text-lg sm:text-xl font-black text-gray-900 mt-1 leading-tight group-hover:text-newton-blue-500 transition-colors truncate">
               {internship.title}
             </h3>
           </div>
@@ -225,11 +225,11 @@ export default function InternshipCard({ internship }: InternshipCardProps) {
       </div>
 
       {/* Bottom Section: Time and CTA */}
-      <div className="mt-auto pt-6 sm:pt-8 border-t border-gray-50 flex flex-col min-[500px]:flex-row gap-4 items-start min-[500px]:items-center justify-between relative z-10">
+      <div className="mt-auto pt-6 sm:pt-8 border-t border-gray-50 flex flex-col-reverse min-[500px]:flex-row gap-4 items-start min-[500px]:items-center justify-between relative z-10">
         <div className="flex items-center gap-2 text-gray-400">
-          <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
-          <span className="text-[10px] font-black">POSTED</span>
-          <span className="text-[10px] font-black uppercase tracking-widest">
+          <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse shrink-0" />
+          <span className="text-[10px] font-black shrink-0">POSTED</span>
+          <span className="text-[10px] font-black uppercase tracking-widest truncate">
             {getTimeAgo(internship.postedDate)}
           </span>
         </div>
