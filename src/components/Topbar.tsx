@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Menu, X, LogOut, ChevronDown, User } from 'lucide-react';
+import { Menu, X, LogOut, ChevronDown, User, Bookmark, CheckCircle2 } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
 import AuthModal from '@/components/ui/AuthModal';
 
@@ -103,6 +103,22 @@ export default function Topbar() {
                         <p className="text-xs font-semibold text-gray-900 truncate">{displayName}</p>
                         <p className="text-[10px] text-gray-400 truncate mt-0.5">{user.email}</p>
                       </div>
+                      <Link 
+                        href="#"
+                        onClick={() => setIsUserMenuOpen(false)}
+                        className="w-full flex items-center gap-2.5 px-4 py-3 text-[11px] font-semibold text-gray-600 hover:bg-gray-50 transition-colors"
+                      >
+                        <Bookmark size={13} />
+                        Saved
+                      </Link>
+                      <Link 
+                        href="#"
+                        onClick={() => setIsUserMenuOpen(false)}
+                        className="w-full flex items-center gap-2.5 px-4 py-3 text-[11px] font-semibold text-gray-600 hover:bg-gray-50 transition-colors"
+                      >
+                        <CheckCircle2 size={13} />
+                        Applied
+                      </Link>
                       <button
                         onClick={async () => {
                           setIsUserMenuOpen(false);
@@ -161,34 +177,57 @@ export default function Topbar() {
                   })}
 
                   {user ? (
-                    <div className="mt-3 px-4 py-3 rounded-xl bg-gray-50 flex items-center justify-between">
-                      <div className="flex items-center gap-2">
-                        {photoURL ? (
-                          <Image
-                            src={photoURL}
-                            alt={displayName}
-                            width={28}
-                            height={28}
-                            className="w-7 h-7 rounded-full object-cover"
-                          />
-                        ) : (
-                          <div className="w-7 h-7 rounded-full bg-newton-blue-500 flex items-center justify-center text-white text-[10px] font-black">
-                            {displayName[0].toUpperCase()}
+                    <div className="mt-3">
+                      <div className="px-4 py-3 rounded-xl bg-gray-50 flex flex-col gap-3">
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-2">
+                            {photoURL ? (
+                              <Image
+                                src={photoURL}
+                                alt={displayName}
+                                width={28}
+                                height={28}
+                                className="w-7 h-7 rounded-full object-cover"
+                              />
+                            ) : (
+                              <div className="w-7 h-7 rounded-full bg-newton-blue-500 flex items-center justify-center text-white text-[10px] font-black">
+                                {displayName[0].toUpperCase()}
+                              </div>
+                            )}
+                            <span className="text-[11px] font-bold text-gray-700 truncate max-w-[100px]">
+                              {displayName}
+                            </span>
                           </div>
-                        )}
-                        <span className="text-[11px] font-bold text-gray-700 truncate max-w-[100px]">
-                          {displayName}
-                        </span>
+                          <button
+                            onClick={async () => {
+                              setIsMobileMenuOpen(false);
+                              await signOut();
+                            }}
+                            className="text-[10px] font-semibold text-red-500 flex items-center gap-1"
+                          >
+                            <LogOut size={11} /> Sign out
+                          </button>
+                        </div>
+                        
+                        <div className="flex flex-col gap-1 border-t border-gray-200/60 pt-2 mt-1">
+                          <Link 
+                            href="#"
+                            onClick={() => setIsMobileMenuOpen(false)}
+                            className="flex items-center gap-2.5 py-2 text-[11px] font-semibold text-gray-600"
+                          >
+                            <Bookmark size={13} />
+                            Saved
+                          </Link>
+                          <Link 
+                            href="#"
+                            onClick={() => setIsMobileMenuOpen(false)}
+                            className="flex items-center gap-2.5 py-2 text-[11px] font-semibold text-gray-600"
+                          >
+                            <CheckCircle2 size={13} />
+                            Applied
+                          </Link>
+                        </div>
                       </div>
-                      <button
-                        onClick={async () => {
-                          setIsMobileMenuOpen(false);
-                          await signOut();
-                        }}
-                        className="text-[10px] font-semibold text-red-500 flex items-center gap-1"
-                      >
-                        <LogOut size={11} /> Sign out
-                      </button>
                     </div>
                   ) : (
                     <button
