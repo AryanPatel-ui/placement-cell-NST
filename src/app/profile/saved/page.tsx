@@ -9,7 +9,7 @@ import type { Internship } from '@/lib/internshipData';
 import InternshipCard from '@/components/listings/InternshipCard';
 
 export default function SavedInternshipsPage() {
-  const { user } = useAuth();
+  const { user, savedInternships: savedIds } = useAuth();
   const [savedInternships, setSavedInternships] = useState<Internship[]>([]);
   const [isLoaded, setIsLoaded] = useState(false);
 
@@ -18,13 +18,13 @@ export default function SavedInternshipsPage() {
 
     const loadSaved = async () => {
       try {
-        const savedIds = JSON.parse(localStorage.getItem('saved_internships') || '[]');
-
         // Fetch real internships from API
         const allInternships = await fetchInternships();
 
         if (active) {
-          const filtered = allInternships.filter((internship) => savedIds.includes(internship.id));
+          const filtered = allInternships.filter(
+            (internship) => savedIds?.includes(internship.id) || savedIds?.includes(internship.applyUrl)
+          );
           setSavedInternships(filtered);
           setIsLoaded(true);
         }
@@ -36,14 +36,10 @@ export default function SavedInternshipsPage() {
 
     loadSaved();
 
-    const handleSavedChange = () => loadSaved();
-    window.addEventListener('saved_internships_changed', handleSavedChange);
-
     return () => {
       active = false;
-      window.removeEventListener('saved_internships_changed', handleSavedChange);
     };
-  }, []);
+  }, [savedIds]);
 
   if (!isLoaded) {
     return (

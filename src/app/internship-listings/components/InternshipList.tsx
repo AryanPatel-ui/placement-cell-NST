@@ -9,7 +9,7 @@ interface InternshipListProps {
   isLoading: boolean;
   onResetFilters: () => void;
   bookmarkedIds: Set<string>;
-  onToggleBookmark: (internshipId: string) => void;
+  onToggleBookmark: (internshipUrl: string) => void;
 }
 
 export default function InternshipList({
@@ -45,7 +45,7 @@ export default function InternshipList({
         <InternshipCard
           key={internship.id}
           internship={internship}
-          isBookmarked={bookmarkedIds.has(internship.id)}
+          isBookmarked={bookmarkedIds.has(internship.id) || bookmarkedIds.has(internship.applyUrl)}
           onToggleBookmark={onToggleBookmark}
         />
       ))}

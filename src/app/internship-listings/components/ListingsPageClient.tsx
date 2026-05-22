@@ -110,21 +110,7 @@ function filterInternships(internships: Internship[], filters: FilterState): Int
   });
 }
 
-function readInitialBookmarks(): Set<string> {
-  if (typeof window === 'undefined') return new Set<string>();
-
-  try {
-    const raw = window.localStorage.getItem(BOOKMARK_STORAGE_KEY);
-    if (!raw) return new Set<string>();
-
-    const parsed = JSON.parse(raw);
-    if (!Array.isArray(parsed)) return new Set<string>();
-
-    return new Set(parsed.filter((value): value is string => typeof value === 'string'));
-  } catch {
-    return new Set<string>();
-  }
-}
+// Bookmarks are loaded in real-time from the unified AuthContext
 
 export const DEFAULT_FILTERS: FilterState = {
   keyword: '',
@@ -139,7 +125,7 @@ export const DEFAULT_FILTERS: FilterState = {
 };
 
 export default function ListingsPageClient() {
-  const { user, loading: authLoading } = useAuth();
+  const { user, savedInternships, toggleSave, loading: authLoading } = useAuth();
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const [filters, setFilters] = useState<FilterState>(DEFAULT_FILTERS);
   const [sortBy, setSortBy] = useState<SortOption>('newest');
@@ -147,16 +133,6 @@ export default function ListingsPageClient() {
   const [hasError, setHasError] = useState(false);
   const [mobileFilterOpen, setMobileFilterOpen] = useState(false);
   const [allInternships, setAllInternships] = useState<Internship[]>([]);
-  const [bookmarkedIds, setBookmarkedIds] = useState<Set<string>>(new Set());
-
-  useEffect(() => {
-    setBookmarkedIds(readInitialBookmarks());
-  }, []);
-
-  useEffect(() => {
-    if (typeof window === 'undefined') return;
-    window.localStorage.setItem(BOOKMARK_STORAGE_KEY, JSON.stringify(Array.from(bookmarkedIds)));
-  }, [bookmarkedIds]);
 
   const loadInternships = useCallback(async (showToast = false, signal?: AbortSignal) => {
     setIsLoading(true);
@@ -195,18 +171,8 @@ export default function ListingsPageClient() {
   }, []);
 
   const handleToggleBookmark = useCallback((internshipId: string) => {
-    setBookmarkedIds((current) => {
-      const next = new Set(current);
-
-      if (next.has(internshipId)) {
-        next.delete(internshipId);
-      } else {
-        next.add(internshipId);
-      }
-
-      return next;
-    });
-  }, []);
+    void toggleSave(internshipId);
+  }, [toggleSave]);
 
   const availableLocations = useMemo(
     () => buildAvailableLocations(allInternships),
@@ -359,7 +325,7 @@ export default function ListingsPageClient() {
               internships={filteredAndSorted}
               isLoading={isLoading}
               onResetFilters={handleResetFilters}
-              bookmarkedIds={bookmarkedIds}
+              bookmarkedIds={new Set(savedInternships)}
               onToggleBookmark={handleToggleBookmark}
             />
           )}

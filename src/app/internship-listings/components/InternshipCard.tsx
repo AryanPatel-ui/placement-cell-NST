@@ -18,7 +18,7 @@ import { parseDeadlineDate } from '@/lib/internshipListings';
 interface InternshipCardProps {
   internship: Internship;
   isBookmarked: boolean;
-  onToggleBookmark: (internshipId: string) => void;
+  onToggleBookmark: (internshipUrl: string) => void;
 }
 
 function getDaysUntilDeadline(deadline: string): number {
@@ -89,7 +89,7 @@ export default function InternshipCard({
           </div>
 
           <button
-            onClick={() => onToggleBookmark(internship.id)}
+            onClick={() => onToggleBookmark(internship.applyUrl)}
             aria-label={isBookmarked ? 'Remove bookmark' : 'Add bookmark'}
             className={`p-2 rounded-xl transition-all duration-200 ${
               isBookmarked

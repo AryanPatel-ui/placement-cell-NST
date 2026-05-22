@@ -96,66 +96,20 @@ function getRoleIcon(title: string) {
 }
 
 export default function InternshipCard({ internship }: InternshipCardProps) {
-  const { user } = useAuth();
-  const [isSaved, setIsSaved] = useState(false);
-  const [isApplied, setIsApplied] = useState(false);
+  const { user, savedInternships, appliedInternships, toggleSave, toggleApplied } = useAuth();
+  const isSaved = savedInternships?.includes(internship.id) || savedInternships?.includes(internship.applyUrl) || false;
+  const isApplied = appliedInternships?.includes(internship.id) || appliedInternships?.includes(internship.applyUrl) || false;
 
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      try {
-        const savedIds = JSON.parse(localStorage.getItem('saved_internships') || '[]');
-        setIsSaved(savedIds.includes(internship.id));
-
-        const appliedIds = JSON.parse(localStorage.getItem('applied_internships') || '[]');
-        setIsApplied(appliedIds.includes(internship.id));
-      } catch (e) {
-        console.error('Error reading internships local storage', e);
-      }
-    }
-  }, [internship.id]);
-
-  const toggleSave = (e: React.MouseEvent) => {
+  const handleSaveClick = (e: React.MouseEvent) => {
     e.preventDefault();
     if (!user) return;
-
-    const newSaved = !isSaved;
-    setIsSaved(newSaved);
-
-    try {
-      const savedIds = JSON.parse(localStorage.getItem('saved_internships') || '[]');
-      if (newSaved) {
-        if (!savedIds.includes(internship.id)) savedIds.push(internship.id);
-      } else {
-        const idx = savedIds.indexOf(internship.id);
-        if (idx > -1) savedIds.splice(idx, 1);
-      }
-      localStorage.setItem('saved_internships', JSON.stringify(savedIds));
-      window.dispatchEvent(new Event('saved_internships_changed'));
-    } catch (e) {
-      console.error('Error saving internship', e);
-    }
+    void toggleSave(internship.applyUrl);
   };
 
-  const toggleApplied = (e: React.MouseEvent) => {
+  const handleAppliedClick = (e: React.MouseEvent) => {
     e.preventDefault();
     if (!user) return;
-
-    const newApplied = !isApplied;
-    setIsApplied(newApplied);
-
-    try {
-      const appliedIds = JSON.parse(localStorage.getItem('applied_internships') || '[]');
-      if (newApplied) {
-        if (!appliedIds.includes(internship.id)) appliedIds.push(internship.id);
-      } else {
-        const idx = appliedIds.indexOf(internship.id);
-        if (idx > -1) appliedIds.splice(idx, 1);
-      }
-      localStorage.setItem('applied_internships', JSON.stringify(appliedIds));
-      window.dispatchEvent(new Event('applied_internships_changed'));
-    } catch (e) {
-      console.error('Error marking internship as applied', e);
-    }
+    void toggleApplied(internship.applyUrl);
   };
 
   const RoleIcon = getRoleIcon(internship.title);
@@ -193,7 +147,7 @@ export default function InternshipCard({ internship }: InternshipCardProps) {
 
         {user && (
           <button
-            onClick={toggleSave}
+            onClick={handleSaveClick}
             className={`p-2.5 sm:p-3 rounded-2xl border transition-all duration-300 flex items-center justify-center shrink-0 ${
               isSaved
                 ? 'bg-[#0066FF]/10 border-[#0066FF]/30 text-[#0066FF]'
@@ -287,7 +241,7 @@ export default function InternshipCard({ internship }: InternshipCardProps) {
         <div className="flex items-center gap-3 sm:gap-4 w-full">
           {user && (
             <button
-              onClick={toggleApplied}
+              onClick={handleAppliedClick}
               className={`flex-1 p-3 sm:px-4 sm:py-3.5 rounded-2xl border transition-all duration-300 flex items-center justify-center gap-2 text-[10px] sm:text-[11px] font-black uppercase tracking-[0.1em] ${
                 isApplied
                   ? 'bg-green-50 border-green-200 text-green-600'
